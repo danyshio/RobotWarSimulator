@@ -38,6 +38,13 @@ public:
         return false;
     }
 
+    bool isOccupied(int r, int c) const{
+        if (r >= 0 && r < rows && c >= 0 && c < cols) {
+            return grid[r][c] != '.';
+        }
+        return false; // treated as not occupied
+    }
+
     void print() const {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
@@ -48,6 +55,35 @@ public:
     }
 };
 
+class GenericRobot{
+    private:
+        string name;
+        int row, col;
+    public:
+        GenericRobot(string n, int r, int c) : name(n), row(r), col(c) {}
+
+        string getName() const {
+        return name;
+    }
+
+    int getRow() const {
+        return row;
+    }
+
+    int getCol() const {
+        return col;
+    }
+
+    void setPosition(int r, int c) {
+        row = r;
+        col = c;
+    }
+
+    bool look(const Battlefield& field, int r, int c) const {
+        return field.isOccupied(r, c);
+    }
+
+};
 int main() {
     srand(time(0)); // seed for randomness
 
@@ -76,6 +112,8 @@ int main() {
     // Create battlefield
     Battlefield field(rows, cols);
 
+    vector<GenericRobot> robots;
+
     // Read robot data
     for (int i = 0; i < robotCount; ++i) {
         getline(inFile, line);
@@ -99,11 +137,20 @@ int main() {
         char symbol = toupper(name[0]);
 
         // Try placing robot, retry random if space is taken
+        bool placed = false;
         int attempts = 0;
-        while (!field.placeRobot(r, c, symbol) && attempts < 100) {
-            r = rand() % rows;
-            c = rand() % cols;
-            ++attempts;
+
+        while (!placed && attempts < 100) {
+            if (field.placeRobot(r, c, symbol)) {
+                robots.emplace_back(name, r, c);
+                placed = true;
+            } else {
+                r = rand() % rows;
+                c = rand() % cols;
+                ++attempts;
+            }
+            
+            
         }
     }
 
@@ -115,6 +162,15 @@ int main() {
 
     cout << "----- Battlefield Layout -----" << endl;
     field.print();
+
+    // Test look function
+    cout << "\n----- Robot Look Test -----" << endl;
+    for (const auto& robot : robots) {
+        int testRow = robot.getRow();
+        int testCol = robot.getCol();
+        cout << robot.getName() << " looks at (" << testRow << ", " << testCol << "): "
+             << (robot.look(field, testRow, testCol) ? "Occupied" : "Empty") << endl;
+    }
 
     return 0;
 }
