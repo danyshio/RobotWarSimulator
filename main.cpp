@@ -142,7 +142,7 @@ class GenericRobot{
         }
     }
 
-        void fire(Battlefield& field, int dx, int dy) {
+        virtual void fire(Battlefield& field, int dx, int dy) {
         if (!hasThought) {
             cout << name << " must think before firing!" << endl;
             return;
@@ -166,6 +166,51 @@ class GenericRobot{
     }
 };
 
+class HideBot : public GenericRobot {
+    private:
+        int hideCharges;
+        bool isHidden;
+
+    public:
+        HideBot(string n, int r, int c, char sym, int charges) :
+            GenericRobot(n, r, c, sym), hideCharges(charges), isHidden(false) {}
+
+        void activeHide() {
+            if (hideCharges > 0 && !isHidden) {
+                isHidden = true;
+                hideCharges--;
+                cout << getName() << "is now hidden (" << hideCharges << " charges left)" << endl;
+            }   else if (isHidden) {
+                cout << getName() << "is already hidden" << endl;
+            }   else{
+                cout << getName() << "has no hide charges left" << endl;
+            }
+        }
+
+        void deactiveHide() {
+            if (isHidden) {
+                isHidden = false;
+                cout << getName() << "is now can be seen" << endl;
+            }
+        }
+
+        bool isCurrentlyHidden() const {
+            return isHidden;
+        } 
+
+        void fire(Battlefield& field, int dx, int dy) override {
+            GenericRobot::fire(field, dx,dy);
+            int targetR = getRow() + dx;
+            int targetC = getCol() + dy;
+            if (field.getAt(targetR, targetC) == '.') {
+                if (hideCharges == 3) {
+                    cout << getName() << " is hidden and cannot be targeted" << endl;
+                }
+            }
+
+        }
+
+};
 
 int main() {
     srand(time(0)); // seed for randomness
