@@ -1,4 +1,4 @@
-M by N : 40 50
+M by N : 10 10
 steps: 5
 robots: 3
 GenericRobot Danysh 9 2
