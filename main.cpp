@@ -75,7 +75,7 @@ public:
 };
 
 class GenericRobot{
-    private:
+    protected:
         string name;
         int row, col;
         char symbol;
@@ -161,7 +161,7 @@ class GenericRobot{
         }
     }
 
-        void endTurn() {
+        virtual void endTurn() {
         hasThought = false;
     }
 };
@@ -208,6 +208,59 @@ class HideBot : public GenericRobot {
                 }
             }
 
+        }
+
+};
+
+class jumpBot : public GenericRobot {
+    private:
+        int jumpCharges;
+        const int maxJump = 3;
+        bool hasJumpedThisTurn;
+
+    public:
+        jumpBot(string n, int r, int c, char sym) :
+            GenericRobot(n, r, c, sym), jumpCharges(0), hasJumpedThisTurn(false) {}
+
+        void jump(Battlefield& field, int newR, int newC) {
+            if (!hasThought) {
+                cout << getName() << "is thinking before jumping" << endl;
+                return;
+            } if (hasJumpedThisTurn) {
+                cout << getName() << "has already jumped this turn" << endl;
+                return;
+            } if (jumpCharges >= maxJump) {
+                cout << getName() << "has no jump charges" << endl;
+                return;
+            }
+
+            if (newR < 0 || newR >= field.getRows() || newC < 0 || newC >= field.getCols()) {
+                cout << getName() << "cannot jump out of Battlefield" << endl;
+                return;
+            }
+
+            if (field.getAt(newR, newC) != '.') {
+                cout << getName() << "the position is occupied" << endl;
+                return;
+            }
+
+            field.moveRobot(getRow(), getCol(), newR, newC, getSymbol());
+            row = newR;
+            col = newC;
+            jumpCharges++;
+            hasJumpedThisTurn = true;
+
+            cout << getName() << "jumped to (" << row << "," << col << ")" << endl;
+            cout << jumpCharges << " jump charges left" << endl;
+        }
+
+        void endTurn() override {
+            GenericRobot::endTurn();
+            hasJumpedThisTurn = false;
+        }
+
+        int getRemainingJumps() const {
+            return maxJump - jumpCharges;
         }
 
 };
