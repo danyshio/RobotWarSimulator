@@ -38,12 +38,31 @@ public:
         return false;
     }
 
-    bool isOccupied(int r, int c) const{
-        if (r >= 0 && r < rows && c >= 0 && c < cols) {
-            return grid[r][c] != '.';
+    bool moveRobot(int oldR, int oldC, int newR, int newC, char symbol) {
+        if (newR >= 0 && newR < rows && newC >= 0 && newC < cols && grid[newR][newC] == '.') {
+            grid[oldR][oldC] = '.';
+            grid[newR][newC] = symbol;
+            return true;
         }
-        return false; // treated as not occupied
+        return false;
     }
+
+    bool fireAt(int r, int c) {
+        if (r >= 0 && r < rows && c >= 0 && c < cols && grid[r][c] != '.') {
+            grid[r][c] = '.'; // Hit!
+            return true;
+        }
+        return false;
+    }
+
+    char getAt(int r, int c) const {
+        if (r >= 0 && rows && c >= 0 && c < cols)
+            return grid[r][c];
+        return '?'; // invalid access
+    }
+
+    int getRows() const {return rows;}
+    int getCols() const {return cols;}
 
     void print() const {
         for (int i = 0; i < rows; ++i) {
@@ -59,31 +78,95 @@ class GenericRobot{
     private:
         string name;
         int row, col;
+        char symbol;
+        bool hasThought;
+
+        bool isAdjacent(int dx, int dy) const {
+        return abs(dx) <= 1 && abs(dy) <= 1 && !(dx == 0 && dy == 0);
+    }
+
     public:
-        GenericRobot(string n, int r, int c) : name(n), row(r), col(c) {}
+        GenericRobot(string n, int r, int c, char sym) : name(n), row(r), col(c), symbol(sym), hasThought(false) {}
 
-        string getName() const {
-        return name;
+        string getName() const {return name;}
+        int getRow() const {return row;}
+        int getCol() const {return symbol;}
+        char getSymbol() const {return symbol;}
+
+        void think() {
+        hasThought = true;
+        cout << name << " is thinking..." << endl;
+    }
+    
+        void look(const Battlefield& field, int dx, int dy) const {
+        if (!hasThought) {
+            cout << name << " must think before looking!" << endl;
+            return;
+        }
+        if (!isAdjacent(dx, dy)) {
+            cout << name << " can only look at adjacent squares!" << endl;
+            return;
+        }
+
+        int r = row + dx;
+        int c = col + dy;
+        cout << name << " looks at (" << r << ", " << c << "): ";
+
+        if (r < 0 || r >= field.getRows() || c < 0 || c >= field.getCols()) {
+            cout << "Out of bounds!" << endl;
+        } else {
+            char cell = field.getAt(r, c);
+            if (cell == '.') cout << "Empty." << endl;
+            else cout << "Occupied by " << cell << "." << endl;
+        }
+    } 
+
+         void move(Battlefield& field, int dx, int dy) {
+        if (!hasThought) {
+            cout << name << " must think before moving!" << endl;
+            return;
+        }
+        if (!isAdjacent(dx, dy)) {
+            cout << name << " can only move to adjacent squares!" << endl;
+            return;
+        }
+
+        int newR = row + dx;
+        int newC = col + dy;
+        if (field.moveRobot(row, col, newR, newC, symbol)) {
+            row = newR;
+            col = newC;
+            cout << name << " moved to (" << row << ", " << col << ")." << endl;
+        } else {
+            cout << name << " failed to move to (" << newR << ", " << newC << ")." << endl;
+        }
     }
 
-    int getRow() const {
-        return row;
+        void fire(Battlefield& field, int dx, int dy) {
+        if (!hasThought) {
+            cout << name << " must think before firing!" << endl;
+            return;
+        }
+        if (!isAdjacent(dx, dy)) {
+            cout << name << " can only fire at adjacent squares!" << endl;
+            return;
+        }
+
+        int targetR = row + dx;
+        int targetC = col + dy;
+        if (field.fireAt(targetR, targetC)) {
+            cout << name << " fired and HIT at (" << targetR << ", " << targetC << ")!" << endl;
+        } else {
+            cout << name << " fired and MISSED at (" << targetR << ", " << targetC << ")." << endl;
+        }
     }
 
-    int getCol() const {
-        return col;
+        void endTurn() {
+        hasThought = false;
     }
-
-    void setPosition(int r, int c) {
-        row = r;
-        col = c;
-    }
-
-    bool look(const Battlefield& field, int r, int c) const {
-        return field.isOccupied(r, c);
-    }
-
 };
+
+
 int main() {
     srand(time(0)); // seed for randomness
 
@@ -137,40 +220,32 @@ int main() {
         char symbol = toupper(name[0]);
 
         // Try placing robot, retry random if space is taken
-        bool placed = false;
         int attempts = 0;
 
-        while (!placed && attempts < 100) {
-            if (field.placeRobot(r, c, symbol)) {
-                robots.emplace_back(name, r, c);
-                placed = true;
-            } else {
-                r = rand() % rows;
-                c = rand() % cols;
-                ++attempts;
-            }
-            
-            
+        while (field.placeRobot(r, c, symbol) && attempts < 100) {
+            r = rand() % rows;
+            c = rand() % cols;
+            ++attempts; 
         }
+        robots.emplace_back(name, r, c, symbol);
     }
 
-    // ignore first, this is just for reference
-    cout << "----- Battlefield Layout from input.txt -----" << endl;
-    cout << "Rows: " << rows << ", Columns: " << cols << endl;
-    cout << "Steps: " << steps << endl;
-    cout << "Robots: " << robotCount << endl << endl;
-
-    cout << "----- Battlefield Layout -----" << endl;
+    cout << "----- Initial Battlefield -----" << endl;
     field.print();
 
-    // Test look function
-    cout << "\n----- Robot Look Test -----" << endl;
-    for (const auto& robot : robots) {
-        int testRow = robot.getRow();
-        int testCol = robot.getCol();
-        cout << robot.getName() << " looks at (" << testRow << ", " << testCol << "): "
-             << (robot.look(field, testRow, testCol) ? "Occupied" : "Empty") << endl;
+    // Simulate one step
+    cout << "\n----- Robot Turn -----" << endl;
+    for (auto& robot : robots) {
+        robot.think();
+        robot.look(field, 0, 1);  // Look right
+        robot.move(field, 0, 1);  // Try to move right
+        robot.fire(field, 1, 0);  // Try to fire downward
+        robot.endTurn();
+        cout << endl;
     }
+
+    cout << "----- Battlefield After Turn -----" << endl;
+    field.print();
 
     return 0;
 }
