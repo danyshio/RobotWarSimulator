@@ -47,18 +47,18 @@ public:
         return false;
     }
 
-    bool fireAt(int r, int c) {
-        if (r >= 0 && r < rows && c >= 0 && c < cols && grid[r][c] != '.') {
-            grid[r][c] = '.'; // Hit!
-            return true;
-        }
-        return false;
-    }
-
     char getAt(int r, int c) const {
         if (r >= 0 && rows && c >= 0 && c < cols)
             return grid[r][c];
         return '?'; // invalid access
+    }
+
+     bool removeRobot(int r, int c) {
+        if (r >= 0 && r < rows && c >= 0 && c < cols && grid[r][c] != '.') {
+            grid[r][c] = '.';
+            return true;
+        }
+        return false;
     }
 
     int getRows() const {return rows;}
@@ -80,69 +80,71 @@ class GenericRobot{
         int row, col;
         char symbol;
         bool hasThought;
+        bool alive;
 
         bool isAdjacent(int dx, int dy) const {
         return abs(dx) <= 1 && abs(dy) <= 1 && !(dx == 0 && dy == 0);
     }
 
     public:
-        GenericRobot(string n, int r, int c, char sym) : name(n), row(r), col(c), symbol(sym), hasThought(false) {}
+        GenericRobot(string n, int r, int c, char sym) : name(n), row(r), col(c), symbol(sym), hasThought(false), alive(true) {}
 
         string getName() const {return name;}
         int getRow() const {return row;}
-        int getCol() const {return symbol;}
+        int getCol() const {return col;}
         char getSymbol() const {return symbol;}
+        bool isAlive() const {return alive;}
 
         void think() {
-        hasThought = true;
-        cout << name << " is thinking..." << endl;
-    }
+            hasThought = true;
+            cout << name << " is thinking..." << endl;
+        }
     
         void look(const Battlefield& field, int dx, int dy) const {
-        if (!hasThought) {
-            cout << name << " must think before looking!" << endl;
-            return;
-        }
-        if (!isAdjacent(dx, dy)) {
-            cout << name << " can only look at adjacent squares!" << endl;
-            return;
+            if (!hasThought) {
+                cout << name << " must think before looking!" << endl;
+                return;
+            }
+            if (!isAdjacent(dx, dy)) {
+                cout << name << " can only look at adjacent squares!" << endl;
+                return;
+            }
+
+            int r = row + dx;
+            int c = col + dy;
+            cout << name << " looks at (" << r << ", " << c << "): ";
+
+            if (r < 0 || r >= field.getRows() || c < 0 || c >= field.getCols()) {
+                cout << "Out of bounds!" << endl;
+            } else {
+                char cell = field.getAt(r, c);
+                if (cell == '.') cout << "Empty." << endl;
+                else cout << "Occupied by " << cell << "." << endl;
+            }
+        } 
+
+        void move(Battlefield& field, int dx, int dy) {
+            if (!hasThought) {
+                cout << name << " must think before moving!" << endl;
+                return;
+            }
+            if (!isAdjacent(dx, dy)) {
+                cout << name << " can only move to adjacent squares!" << endl;
+                return;
+            }
+
+            int newR = row + dx;
+            int newC = col + dy;
+            if (field.moveRobot(row, col, newR, newC, symbol)) {
+                row = newR;
+                col = newC;
+                cout << name << " moved to (" << row << ", " << col << ")." << endl;
+            } else {
+                cout << name << " failed to move to (" << newR << ", " << newC << ")." << endl;
+            }
         }
 
-        int r = row + dx;
-        int c = col + dy;
-        cout << name << " looks at (" << r << ", " << c << "): ";
-
-        if (r < 0 || r >= field.getRows() || c < 0 || c >= field.getCols()) {
-            cout << "Out of bounds!" << endl;
-        } else {
-            char cell = field.getAt(r, c);
-            if (cell == '.') cout << "Empty." << endl;
-            else cout << "Occupied by " << cell << "." << endl;
-        }
-    } 
-
-         void move(Battlefield& field, int dx, int dy) {
-        if (!hasThought) {
-            cout << name << " must think before moving!" << endl;
-            return;
-        }
-        if (!isAdjacent(dx, dy)) {
-            cout << name << " can only move to adjacent squares!" << endl;
-            return;
-        }
-
-        int newR = row + dx;
-        int newC = col + dy;
-        if (field.moveRobot(row, col, newR, newC, symbol)) {
-            row = newR;
-            col = newC;
-            cout << name << " moved to (" << row << ", " << col << ")." << endl;
-        } else {
-            cout << name << " failed to move to (" << newR << ", " << newC << ")." << endl;
-        }
-    }
-
-        void fire(Battlefield& field, int dx, int dy) {
+        void fire(Battlefield& field, vector<GenericRobot>& robots, int dx, int dy) {
         if (!hasThought) {
             cout << name << " must think before firing!" << endl;
             return;
@@ -154,11 +156,15 @@ class GenericRobot{
 
         int targetR = row + dx;
         int targetC = col + dy;
-        if (field.fireAt(targetR, targetC)) {
-            cout << name << " fired and HIT at (" << targetR << ", " << targetC << ")!" << endl;
-        } else {
-            cout << name << " fired and MISSED at (" << targetR << ", " << targetC << ")." << endl;
+        for (auto& r : robots) {
+            if(r.isAlive() && r.getRow() == targetR && r.getCol() == targetC){
+                field.removeRobot(targetR, targetC);
+                r.alive = false;
+                cout << " fired and DESTROYED " << r.getName() << " at (" << targetC << ")!" << endl;
+                return;
+            }
         }
+        cout << name << " fired and MISSED at (" << targetR << ", " << targetC << ")." << endl;
     }
 
         void endTurn() {
@@ -222,7 +228,7 @@ int main() {
         // Try placing robot, retry random if space is taken
         int attempts = 0;
 
-        while (field.placeRobot(r, c, symbol) && attempts < 100) {
+        while (!field.placeRobot(r, c, symbol) && attempts < 100) {
             r = rand() % rows;
             c = rand() % cols;
             ++attempts; 
@@ -236,10 +242,11 @@ int main() {
     // Simulate one step
     cout << "\n----- Robot Turn -----" << endl;
     for (auto& robot : robots) {
+        if (!robot.isAlive()) continue;
         robot.think();
         robot.look(field, 0, 1);  // Look right
         robot.move(field, 0, 1);  // Try to move right
-        robot.fire(field, 1, 0);  // Try to fire downward
+        robot.fire(field, robots, 1, 0); 
         robot.endTurn();
         cout << endl;
     }
