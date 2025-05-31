@@ -17,7 +17,7 @@ public:
     bool removeRobot(int r, int c);
     int getRows() const;
     int getCols() const;
-    void print() const;
+    void display() const;
 };
 
 #endif
