@@ -214,13 +214,11 @@ class HideBot : public GenericRobot {
 
 class jumpBot : public GenericRobot {
     private:
-        int jumpCharges;
-        const int maxJump = 3;
-        bool hasJumpedThisTurn;
+        int jumpCharges =3;;
+        bool hasJumpedThisTurn = false;
 
     public:
-        jumpBot(string n, int r, int c, char sym) :
-            GenericRobot(n, r, c, sym), jumpCharges(0), hasJumpedThisTurn(false) {}
+        jumpBot(string n, int r, int c, char sym) : GenericRobot(n, r, c, sym) {}
 
         void jump(Battlefield& field, int newR, int newC) {
             if (!hasThought) {
@@ -229,11 +227,10 @@ class jumpBot : public GenericRobot {
             } if (hasJumpedThisTurn) {
                 cout << getName() << "has already jumped this turn" << endl;
                 return;
-            } if (jumpCharges >= maxJump) {
+            } if (jumpCharges <= 0) {
                 cout << getName() << "has no jump charges" << endl;
                 return;
             }
-
             if (newR < 0 || newR >= field.getRows() || newC < 0 || newC >= field.getCols()) {
                 cout << getName() << "cannot jump out of Battlefield" << endl;
                 return;
@@ -259,11 +256,176 @@ class jumpBot : public GenericRobot {
             hasJumpedThisTurn = false;
         }
 
-        int getRemainingJumps() const {
-            return maxJump - jumpCharges;
+        int getJumpCharges() const{
+            return jumpCharges;
         }
 
 };
+
+class LongShotBot : public GenericRobot {
+private:
+    const int maxRange = 3;
+
+public:
+    LongShotBot(string n, int r, int c, char sym) : GenericRobot(n, r, c, sym) {}
+
+    void fire(Battlefield& field, int dx, int dy) override {
+        if(!hasThought) {
+            cout << name << "thinking before firing" << endl;
+            return;
+        }
+        int distance = abs(dx) + abs(dy);
+        if (distance > maxRange) {
+            cout << name << "can't fire beyond range of " << maxRange << endl;
+            return;
+        }
+
+        int targetR = row +dx;
+        int targetC = col + dy;
+        if (field.fireAt(targetR, targetC)) {
+            cout << name << "target hit at (" << targetR << "," << targetC << ") from distance" << distance << endl;
+        } else {
+            cout << name << "missed the target " << endl;
+        }
+    }
+
+};
+
+class SemiAutoBot : public GenericRobot {
+    public:
+        SemiAutoBot(string n, int r, int c, char sym) : GenericRobot(n, r, c, sym) {}
+
+        void fire(Battlefield& field, int dx, int dy) override {
+            if (!hasThought) {
+                cout << name << "thinking before firring" << endl;
+                return;
+            }
+
+            int targetR = row +dx;
+            int targetC = col + dy;
+            cout << name << "firing 3 round burst" << endl;
+
+            for(int i = 0; i < 3; i++) {
+                if (rand() % 100 < 70) {
+                    if (field.fireAt(targetR, targetC)) {
+                        cout << name << "Round " << (i + 1) << " hit" << endl;
+                    } else {
+                        cout << name << "Round " << (i + 1) << " missed target" << endl;
+                    } 
+                }
+            }
+        }
+};
+
+class ThirtyShotBot : public GenericRobot {
+    private:
+        int ammo = 30;
+
+    public:
+    ThirtyShotBot(string n, int r, int c, char sym) : GenericRobot(n, r, c, sym) {}
+
+    void fire(Battlefield& field, int dx, int dy) override {
+        if(!hasThought) {
+            cout << name << "thinking before firing" << endl;
+            return;
+        }
+        if (ammo <= 0) {
+            cout << name << " has no ammo left" << endl;
+            return;
+        }
+        ammo--;
+        GenericRobot::fire(field, dx ,dy);
+        cout << name << "has" << ammo << "rounds left" << endl;
+    }
+
+    void reload() {
+        ammo = 30;
+        cout << name << "has reload" << endl;
+    }
+};
+
+class ScoutBot : public GenericRobot {
+    private:
+        int scanCharges = 3;
+    
+    public:
+    ScoutBot(string n, int r, int c, char sym) : GenericRobot(n, r, c, sym) {}
+
+    void scanBattlefield(Battlefield& field) {
+        if(!hasThought) {
+            cout << name << "thinking before scanning" << endl;
+            return;
+        }
+        if(scanCharges <= 0) {
+            cout << name << "has no scan charges left" << endl;
+            return;
+        }
+        cout << name << "scanning battlefield:" << endl;
+        for (int r = 0; r < field.getRows(); r++) {
+            for (int c = 0; c < field.getCols(); c++) {
+                char cell = field.getAt(r , c);
+                if (cell != ',') {
+                    cout << "spotted" << cell << " at (" << r << "," << c << ")" << endl;
+                }
+            }
+        }
+        scanCharges--;
+    }
+};
+
+class trackBot : public GenericRobot {
+    private:
+        int trackCharges = 3;
+        vector<char> trackedTargets;
+    
+    public:
+        trackBot(string n, int r, int c, char sym) : GenericRobot(n, r, c, sym) {}
+        
+        void plantTracker(Battlefield& field, char targetSymbol) {
+            if (!hasThought) {
+                cout << name << "thinking before panting tracker" << endl;
+                return;
+            }
+            if (trackCharges <= 0) {
+                cout << name << "has no track charges left" << endl;
+            }return;
+
+            bool targetFound  = false;
+            for (int r = 0 ; r < field.getRows(); r++ ) {
+                for (int c = 0; c < field.getCols(); c++) {
+                    if (field.getAt(r, c) == targetSymbol) {
+                        targetFound = true;
+                        break;
+                    }
+                }
+            }
+            if (targetFound) {
+                trackedTargets.push_back(targetSymbol);
+                trackCharges--;
+                cout << name << "is now tracking" << targetSymbol << endl;
+            } else {
+                cout << "Target" << targetSymbol << "not found" << endl;
+            }
+
+            void showTrackedTargets(Battlefield& field) const {
+                cout << name << " is tracking: " <<endl;
+                for (char target : trackedTargets) {
+                    for (int r = 0; r < field.getRows(); r++) {
+                        for (int c = 0; c < field.getCols(); c++) {
+                            if (field.getAt(r, c) == target) {
+                                cout << target << "at" << r << "," << c << endl;
+                            }
+                        }
+                    }
+                }
+            }
+};
+
+class upgradeManger {
+    private:
+
+    public:
+}
 
 int main() {
     srand(time(0)); // seed for randomness
