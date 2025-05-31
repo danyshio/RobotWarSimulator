@@ -21,6 +21,13 @@ Course: Data Structures and Algorithms
 #include <memory>
 using namespace std;
 
+class Hidebot;
+class jumpBot;
+class trackBot;
+class ScoutBot;
+class LongShotbot;
+class SemiAutoBot;
+class ThirtyShotBot;
 class Battlefield {
 private:
     int rows;
@@ -82,6 +89,7 @@ class GenericRobot{
         int row, col;
         char symbol;
         bool hasThought;
+        unordered_set<string> upgradesTaken;
 
         bool isAdjacent(int dx, int dy) const {
         return abs(dx) <= 1 && abs(dy) <= 1 && !(dx == 0 && dy == 0);
@@ -90,10 +98,20 @@ class GenericRobot{
     public:
         GenericRobot(string n, int r, int c, char sym) : name(n), row(r), col(c), symbol(sym), hasThought(false) {}
 
+        virtual ~GenericRobot() {}
+
         string getName() const {return name;}
         int getRow() const {return row;}
         int getCol() const {return symbol;}
         char getSymbol() const {return symbol;}
+
+        //Upgrade tracking
+        bool hasUpgrade(const string& category) const {
+            return upgradesTaken.count(category) > 0;
+        }
+        void addUpgrade(const string& category) {
+            upgradesTaken.insert(category);
+        }
 
         void think() {
         hasThought = true;
@@ -166,7 +184,19 @@ class GenericRobot{
         virtual void endTurn() {
         hasThought = false;
     }
+
 };
+
+string getUpgradeCategory(GenericRobot* robot) {
+    if (dynamic_cast<HideBot*>(robot) || dynamic_cast<jumpBot*>(robot))
+        return "Movement";
+    if (dynamic_cast<trackBot*>(robot) || dynamic_cast<ScoutBot*>(robot))
+        return "Seeing";
+    if (dynamic_cast<LongShotBot*>(robot) || dynamic_cast<SemiAutoBot*>(robot) || dynamic_cast<ThirtyShotBot*>(robot))
+        return "Shooting";
+    return "Unknown";
+}
+
 
 class HideBot : public GenericRobot {
     private:
@@ -431,38 +461,15 @@ class upgradeManager {
         unordered_set<string> seeingUpgradesTaken;
     public:
     void grantUpgrade(GenericRobot* robot, int killCount) {
-        if (killCount > 3) return;
+        if (killCount < 1) return;
 
-        vector<string> availableCategories;
-        if (movementUpgradesTaken.size() < 1) availableCategories.push_back("Movement");
-        if (shootingUpgradesTaken.size() < 1) availableCategories.push_back("Shooting");
-        if (seeingUpgradesTaken.size() < 1) availableCategories.push_back("Seeing");
+        string category = getUpgradeCategory(robot);
+        if (category == "Unknown") return;
+        if (robot ->hasUpgrade(category)) return;
 
-        if (availableCategories.empty()) return;
-
-        string selected = availableCategories[rand() % availableCategories.size()];
-        if (selected == "Movement" ) {
-            movementUpgradesTaken.insert("Movement");
-            cout << robot->getName() << "has been granteed movement upgrade" << endl;
-        }
-        else if (selected == "Shooting") {
-            shootingUpgradesTaken.insert("Shooting");
-            cout << robot->getName() << "has been granteed shootinf upgrade" << endl;
-        }
-
-        else if (selected == "Seeing") {
-            seeingUpgradesTaken.insert("Seeing");
-            cout << robot->getName() << "has been granteed seeing upgrade" << endl;
-        }
+        robot->addUpgrade(category);
+        cout << robot->getName() << "has been granted" << category << "upgrade" << endl;
     }
-
-    bool canUpgrade(string category) const {
-        if (category == "Movement") return movementUpgradesTaken.size() < 1;
-        if (category == "Shooting") return shootingUpgradesTaken.size() < 1;
-        if (category == "Seeing") return seeingUpgradesTaken.size() < 1;
-        return false;
-    }
-
 };
 
 int main() {
@@ -493,7 +500,7 @@ int main() {
     // Create battlefield
     Battlefield field(rows, cols);
 
-    vector<GenericRobot> robots;
+    vector<GenericRobot*> robots;
 
     // Read robot data
     for (int i = 0; i < robotCount; ++i) {
@@ -525,8 +532,31 @@ int main() {
             c = rand() % cols;
             ++attempts; 
         }
-        robots.emplace_back(name, r, c, symbol);
+        
+
+
+        //Create specific robot types
+        if (type == "HideBot")
+            robots.push_back(new HideBot(name, r, c, symbol, 3));
+        else if (type == "jumpBot")
+            robots.push_back(new jumpBot(name, r, c, symbol));
+        else if (type == "LongShotBot")
+            robots.push_back(new LongShotBot(name, r, c, symbol));
+        else if (type == "SemiAutoBot")
+            robots.push_back(new SemiAutoBot(name, r, c, symbol));
+        else if (type == "ThirtyShotBot")
+            robots.push_back(new ThirtyShotBot(name, r, c, symbol));
+        else if (type == "ScoutBot")
+            robots.push_back(new ScoutBot(name, r, c, symbol));
+        else if (type == "trackBot")
+            robots.push_back(new trackBot(name, r, c, symbol));
+        else
+            robots.push_back(new GenericRobot(name, r, c, symbol));
     }
+
+     for (auto robot : robots) {
+        delete robot;
+     }   
 
     cout << "----- Initial Battlefield -----" << endl;
     field.print();
@@ -534,11 +564,11 @@ int main() {
     // Simulate one step
     cout << "\n----- Robot Turn -----" << endl;
     for (auto& robot : robots) {
-        robot.think();
-        robot.look(field, 0, 1);  // Look right
-        robot.move(field, 0, 1);  // Try to move right
-        robot.fire(field, 1, 0);  // Try to fire downward
-        robot.endTurn();
+        robot->think();
+        robot->look(field, 0, 1);  // Look right
+        robot->move(field, 0, 1);  // Try to move right
+        robot->fire(field, 1, 0);  // Try to fire downward
+        robot->endTurn();
         cout << endl;
     }
 
