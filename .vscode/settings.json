@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "ctime": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "iosfwd": "cpp"
     },
     "git.ignoreLimitWarning": true
 }
