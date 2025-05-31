@@ -19,6 +19,12 @@ int main() {
         return 1;
     }
 
+    ofstream outFile("game1_log.txt"); // Log output here
+    if (!outFile){
+        cerr << "Failed to create log file." << endl;
+        return 1;
+    }
+
     string line;
     int rows = 0, cols = 0, steps = 0, robotCount = 0;
 
@@ -68,7 +74,8 @@ int main() {
     }
 
     cout << "----- Initial Battlefield -----" << endl;
-    field.display();
+    field.display(cout);
+    field.display(outFile);
 
     cout << "DEBUG: Starting simulation with " << steps << " steps." << endl;
 
@@ -79,30 +86,39 @@ for (int step = 0; step < steps; ++step) {
         if (!robot.isAlive()) continue;
 
         cout << "DEBUG: Robot " << robot.getName() << " starts turn." << endl;
+        outFile << "DEBUG: Robot " << robot.getName() << " starts turn." << endl;
 
-        robot.think();
-        robot.look(field, 0, 1);  // Look right
-        robot.fire(field, robots, 0, 1); // Fire right
-        robot.move(field, 0, 1);  // Move right
+
+        robot.think(outFile);
+        robot.look(field, 0, 1, outFile);  // Look right
+        robot.fire(field, robots, 0, 1, outFile); // Fire right
+        robot.move(field, 0, 1, outFile);  // Move right
         robot.endTurn();
 
         cout << "DEBUG: Robot " << robot.getName() << " ends turn." << endl;
+        outFile << "DEBUG: Robot " << robot.getName() << " ends turn." << endl;
+    
     }
 
     // Try to reenter one robot
     for (auto& robot : robots) {
         if (!robot.isAlive() && robot.getLives() > 0 && robot.getReentries() < 3) {
-            if (robot.attemptReentry(field, rows, cols)) {
+            if (robot.attemptReentry(field, rows, cols, outFile)) {
                 cout << "DEBUG: " << robot.getName() << " reentered the battlefield." << endl;
+                outFile << "DEBUG: " << robot.getName() << " reentered the battlefield." << endl;
                 break;
             }
         }
     }
 
     cout << "----- Battlefield After Turn " << (step + 1) << " -----" << endl;
-    field.display();
+    outFile << "----- Battlefield After Turn " << (step + 1) << " -----" << endl;
+    
+    field.display(cout);
+    field.display(outFile);
+    }
 
-    cout.flush(); // Make sure everything gets printed immediately
-}
+    outFile.close(); // Close log file
+    return 0;
 
 }

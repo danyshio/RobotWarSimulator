@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "Battlefield.h"
+using namespace std;
 
 class GenericRobot {
 private:
@@ -31,14 +32,14 @@ public:
     int getShells() const;
     int getReentries() const;
 
-    void think();
-    void look(const Battlefield& field, int dx, int dy) const;
-    void move(Battlefield& field, int dx, int dy);
-    void fire(Battlefield& field, std::vector<GenericRobot>& robots, int dx, int dy);
+    void think(std::ostream& out);
+    void look(const Battlefield& field, int dx, int dy, ostream& out) const;
+    void move(Battlefield& field, int dx, int dy, ostream& out);
+    void fire(Battlefield& field, std::vector<GenericRobot>& robots, int dx, int dy, ostream& out);
     void endTurn();
 
     void reset(); // reset shell and thought for new re-entry
-    bool attemptReentry(Battlefield& field, int rows, int cols);
+    bool attemptReentry(Battlefield& field, int rows, int cols, ostream& out);
 };
 
 #endif

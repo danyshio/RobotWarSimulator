@@ -18,9 +18,9 @@ int GenericRobot::getLives() const { return lives; }
 int GenericRobot::getShells() const { return shells; }
 int GenericRobot::getReentries() const { return reentries; }
 
-void GenericRobot::think() {
+void GenericRobot::think(ostream& out) {
     hasThought = true;
-    cout << name << " is thinking..." << endl;
+    out << name << " is thinking..." << endl;
 }
 
 bool GenericRobot::isAdjacent(int dx, int dy) const {
@@ -31,13 +31,13 @@ bool GenericRobot::inBounds(int r, int c, const Battlefield& field) const {
     return r >= 0 && r < field.getRows() && c >= 0 && c < field.getCols();
 }
 
-void GenericRobot::look(const Battlefield& field, int dx, int dy) const {
+void GenericRobot::look(const Battlefield& field, int dx, int dy, ostream& out) const {
     if (!hasThought) {
-        cout << name << " must think before looking!" << endl;
+        out << name << " must think before looking!" << endl;
         return;
     }
     if (!isAdjacent(dx, dy)) {
-        cout << name << " can only look at adjacent squares!" << endl;
+        out << name << " can only look at adjacent squares!" << endl;
         return;
     }
 
@@ -46,21 +46,21 @@ void GenericRobot::look(const Battlefield& field, int dx, int dy) const {
     cout << name << " looks at (" << r << ", " << c << "): ";
 
     if (!inBounds(r, c, field)) {
-        cout << "Out of bounds!" << endl;
+        out << "Out of bounds!" << endl;
     } else {
         char cell = field.getAt(r, c);
         if (cell == '.') cout << "Empty." << endl;
-        else cout << "Occupied by " << cell << "." << endl;
+        else out << "Occupied by " << cell << "." << endl;
     }
 }
 
-void GenericRobot::move(Battlefield& field, int dx, int dy) {
+void GenericRobot::move(Battlefield& field, int dx, int dy, ostream& out) {
     if (!hasThought) {
-        cout << name << " must think before moving!" << endl;
+        out << name << " must think before moving!" << endl;
         return;
     }
     if (!isAdjacent(dx, dy)) {
-        cout << name << " can only move to adjacent squares!" << endl;
+        out << name << " can only move to adjacent squares!" << endl;
         return;
     }
 
@@ -69,29 +69,29 @@ void GenericRobot::move(Battlefield& field, int dx, int dy) {
     if (field.moveRobot(row, col, newR, newC, symbol)) {
         row = newR;
         col = newC;
-        cout << name << " moved to (" << row << ", " << col << ")." << endl;
+        out << name << " moved to (" << row << ", " << col << ")." << endl;
     } else {
-        cout << name << " failed to move to (" << newR << ", " << newC << ")." << endl;
+        out << name << " failed to move to (" << newR << ", " << newC << ")." << endl;
     }
 }
 
-void GenericRobot::fire(Battlefield& field, vector<GenericRobot>& robots, int dx, int dy) {
+void GenericRobot::fire(Battlefield& field, vector<GenericRobot>& robots, int dx, int dy, ostream& out) {
     if (!hasThought) {
-        cout << name << " must think before firing!" << endl;
+        out << name << " must think before firing!" << endl;
         return;
     }
     if (!isAdjacent(dx, dy)) {
-        cout << name << " can only fire at adjacent squares!" << endl;
+        out << name << " can only fire at adjacent squares!" << endl;
         return;
     }
 
     if (dx == 0 && dy == 0) {
-        cout << name << " cannot fire at its own location!" << endl;
+        out << name << " cannot fire at its own location!" << endl;
         return;
     }
 
     if (shells <= 0) {
-        cout << name << " has no shells left and will self-destruct!" << endl;
+        out << name << " has no shells left and will self-destruct!" << endl;
         field.removeRobot(row, col);
         alive = false;
         return;
@@ -103,7 +103,7 @@ void GenericRobot::fire(Battlefield& field, vector<GenericRobot>& robots, int dx
     int targetC = col + dy;
 
     if (!inBounds(targetR, targetC, field)) {
-        cout << name << " fired out of bounds." << endl;
+        out << name << " fired out of bounds." << endl;
         return;
     }
 
@@ -117,18 +117,18 @@ void GenericRobot::fire(Battlefield& field, vector<GenericRobot>& robots, int dx
                 r.alive = false;
                 r.lives--;
 
-                cout << name << " fired and DESTROYED " << r.getName()
+                out << name << " fired and DESTROYED " << r.getName()
                      << " at (" << targetR << ", " << targetC << ")!" << endl;
                 return;
             }
         }
-        cout << name << " fired but target was empty at (" << targetR << ", " << targetC << ")." << endl;
+        out << name << " fired but target was empty at (" << targetR << ", " << targetC << ")." << endl;
     } else {
-        cout << name << " MISSED at (" << targetR << ", " << targetC << ")." << endl;
+        out << name << " MISSED at (" << targetR << ", " << targetC << ")." << endl;
     }
 
     if (shells <= 0) {
-        cout << name << " has run out of shells and will self-destruct!" << endl;
+        out << name << " has run out of shells and will self-destruct!" << endl;
         field.removeRobot(row, col);
         alive = false;
     }
@@ -144,7 +144,7 @@ void GenericRobot::reset() {
     hasThought = false;
 }
 
-bool GenericRobot::attemptReentry(Battlefield& field, int rows, int cols) {
+bool GenericRobot::attemptReentry(Battlefield& field, int rows, int cols, ostream& out) {
     if (alive || lives <= 0 || reentries >= 3) return false;
 
     for (int attempt = 0; attempt < 100; ++attempt) {
@@ -155,7 +155,7 @@ bool GenericRobot::attemptReentry(Battlefield& field, int rows, int cols) {
             col = c;
             reset();
             ++reentries;
-            cout << name << " has re-entered the battlefield at (" << r << ", " << c << ")." << endl;
+            out << name << " has re-entered the battlefield at (" << r << ", " << c << ")." << endl;
             return true;
         }
     }

@@ -1,0 +1,118 @@
+A . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . D . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . I . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+DEBUG: Robot Danysh starts turn.
+Danysh is thinking...
+Danysh fired but target was empty at (3, 7).
+Danysh moved to (3, 7).
+DEBUG: Robot Danysh ends turn.
+DEBUG: Robot Iliya starts turn.
+Iliya is thinking...
+Iliya MISSED at (7, 9).
+Iliya moved to (7, 9).
+DEBUG: Robot Iliya ends turn.
+DEBUG: Robot Asmaan starts turn.
+Asmaan is thinking...
+Asmaan fired but target was empty at (0, 1).
+Asmaan moved to (0, 1).
+DEBUG: Robot Asmaan ends turn.
+----- Battlefield After Turn 1 -----
+. A . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . D . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . I 
+. . . . . . . . . . 
+. . . . . . . . . . 
+DEBUG: Robot Danysh starts turn.
+Danysh is thinking...
+Danysh fired but target was empty at (3, 8).
+Danysh moved to (3, 8).
+DEBUG: Robot Danysh ends turn.
+DEBUG: Robot Iliya starts turn.
+Iliya is thinking...
+Out of bounds!
+Iliya fired out of bounds.
+Iliya failed to move to (7, 10).
+DEBUG: Robot Iliya ends turn.
+DEBUG: Robot Asmaan starts turn.
+Asmaan is thinking...
+Asmaan fired but target was empty at (0, 2).
+Asmaan moved to (0, 2).
+DEBUG: Robot Asmaan ends turn.
+----- Battlefield After Turn 2 -----
+. . A . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . D . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . I 
+. . . . . . . . . . 
+. . . . . . . . . . 
+DEBUG: Robot Danysh starts turn.
+Danysh is thinking...
+Danysh fired but target was empty at (3, 9).
+Danysh moved to (3, 9).
+DEBUG: Robot Danysh ends turn.
+DEBUG: Robot Iliya starts turn.
+Iliya is thinking...
+Out of bounds!
+Iliya fired out of bounds.
+Iliya failed to move to (7, 10).
+DEBUG: Robot Iliya ends turn.
+DEBUG: Robot Asmaan starts turn.
+Asmaan is thinking...
+Asmaan MISSED at (0, 3).
+Asmaan moved to (0, 3).
+DEBUG: Robot Asmaan ends turn.
+----- Battlefield After Turn 3 -----
+. . . A . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . D 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . I 
+. . . . . . . . . . 
+. . . . . . . . . . 
+DEBUG: Robot Danysh starts turn.
+Danysh is thinking...
+Out of bounds!
+Danysh fired out of bounds.
+Danysh failed to move to (3, 10).
+DEBUG: Robot Danysh ends turn.
+DEBUG: Robot Iliya starts turn.
+Iliya is thinking...
+Out of bounds!
+Iliya fired out of bounds.
+Iliya failed to move to (7, 10).
+DEBUG: Robot Iliya ends turn.
+DEBUG: Robot Asmaan starts turn.
+Asmaan is thinking...
+Asmaan fired but target was empty at (0, 4).
+Asmaan moved to (0, 4).
+DEBUG: Robot Asmaan ends turn.
+----- Battlefield After Turn 4 -----
+. . . . A . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . D 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . I 
+. . . . . . . . . . 
+. . . . . . . . . . 

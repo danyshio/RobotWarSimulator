@@ -40,11 +40,11 @@ bool Battlefield::removeRobot(int r, int c) {
 int Battlefield::getRows() const { return rows; }
 int Battlefield::getCols() const { return cols; }
 
-void Battlefield::display() const {
+void Battlefield::display(ostream& out) const {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            cout << grid[i][j] << ' ';
+            out << grid[i][j] << ' ';
         }
-        cout << endl;
+        out << endl;
     }
 }

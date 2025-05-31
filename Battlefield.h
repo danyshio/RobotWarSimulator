@@ -1,7 +1,9 @@
 #ifndef BATTLEFIELD_H
 #define BATTLEFIELD_H
-
+#include <ostream>
 #include <vector>
+
+using namespace std;
 
 class Battlefield {
 private:
@@ -17,7 +19,7 @@ public:
     bool removeRobot(int r, int c);
     int getRows() const;
     int getCols() const;
-    void display() const;
+    void display(ostream& out) const;
 };
 
 #endif
