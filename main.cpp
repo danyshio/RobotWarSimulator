@@ -17,6 +17,8 @@ Course: Data Structures and Algorithms
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <unordered_set>
+#include <memory>
 using namespace std;
 
 class Battlefield {
@@ -406,26 +408,62 @@ class trackBot : public GenericRobot {
             } else {
                 cout << "Target" << targetSymbol << "not found" << endl;
             }
+        }
 
-            void showTrackedTargets(Battlefield& field) const {
-                cout << name << " is tracking: " <<endl;
-                for (char target : trackedTargets) {
-                    for (int r = 0; r < field.getRows(); r++) {
-                        for (int c = 0; c < field.getCols(); c++) {
-                            if (field.getAt(r, c) == target) {
-                                cout << target << "at" << r << "," << c << endl;
-                            }
+        void showTrackedTargets(Battlefield& field) const {
+            cout << name << " is tracking: " <<endl;
+            for (char target : trackedTargets) {
+                for (int r = 0; r < field.getRows(); r++) {
+                    for (int c = 0; c < field.getCols(); c++) {
+                        if (field.getAt(r, c) == target) {
+                            cout << target << "at" << r << "," << c << endl;
                         }
                     }
                 }
             }
+        }
 };
 
-class upgradeManger {
+class upgradeManager {
     private:
-
+        unordered_set<string> movementUpgradesTaken;
+        unordered_set<string> shootingUpgradesTaken;
+        unordered_set<string> seeingUpgradesTaken;
     public:
-}
+    void grantUpgrade(GenericRobot* robot, int killCount) {
+        if (killCount > 3) return;
+
+        vector<string> availableCategories;
+        if (movementUpgradesTaken.size() < 1) availableCategories.push_back("Movement");
+        if (shootingUpgradesTaken.size() < 1) availableCategories.push_back("Shooting");
+        if (seeingUpgradesTaken.size() < 1) availableCategories.push_back("Seeing");
+
+        if (availableCategories.empty()) return;
+
+        string selected = availableCategories[rand() % availableCategories.size()];
+        if (selected == "Movement" ) {
+            movementUpgradesTaken.insert("Movement");
+            cout << robot->getName() << "has been granteed movement upgrade" << endl;
+        }
+        else if (selected == "Shooting") {
+            shootingUpgradesTaken.insert("Shooting");
+            cout << robot->getName() << "has been granteed shootinf upgrade" << endl;
+        }
+
+        else if (selected == "Seeing") {
+            seeingUpgradesTaken.insert("Seeing");
+            cout << robot->getName() << "has been granteed seeing upgrade" << endl;
+        }
+    }
+
+    bool canUpgrade(string category) const {
+        if (category == "Movement") return movementUpgradesTaken.size() < 1;
+        if (category == "Shooting") return shootingUpgradesTaken.size() < 1;
+        if (category == "Seeing") return seeingUpgradesTaken.size() < 1;
+        return false;
+    }
+
+};
 
 int main() {
     srand(time(0)); // seed for randomness
