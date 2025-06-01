@@ -1,6 +1,0 @@
-M by N : 10 10
-steps: 5
-robots: 3
-GenericRobot Danysh 9 2
-GenericRobot Asmaan 2 5
-GenericRobot Iliya random random
