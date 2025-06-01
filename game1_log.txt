@@ -1,5 +1,5 @@
 ----- Initial Battlefield -----
-. . . . . . A . . . 
+. . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . D . . . 
@@ -8,7 +8,7 @@
 . . . . . . . . . . 
 . . . . . . . . I . 
 . . . . . . . . . . 
-. . . . . . . . . . 
+. . . . . . . A . . 
 DEBUG: Starting simulation with 5 steps.
 
 ----- Step 1 -----
@@ -26,12 +26,12 @@ Iliya moved to (7, 9).
 DEBUG: Robot Iliya ends turn.
 DEBUG: Robot Asmaan starts turn.
 Asmaan is thinking...
-Asmaan looks at (0, 7): Empty.
-Asmaan MISSED at (0, 7).
-Asmaan moved to (0, 7).
+Asmaan looks at (9, 8): Empty.
+Asmaan fired but target was empty at (9, 8).
+Asmaan moved to (9, 8).
 DEBUG: Robot Asmaan ends turn.
 ----- Battlefield After Turn 1 -----
-. . . . . . . A . . 
+. . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . D . . 
@@ -40,13 +40,13 @@ DEBUG: Robot Asmaan ends turn.
 . . . . . . . . . . 
 . . . . . . . . . I 
 . . . . . . . . . . 
-. . . . . . . . . . 
+. . . . . . . . A . 
 
 ----- Step 2 -----
 DEBUG: Robot Danysh starts turn.
 Danysh is thinking...
 Danysh looks at (3, 8): Empty.
-Danysh fired but target was empty at (3, 8).
+Danysh MISSED at (3, 8).
 Danysh moved to (3, 8).
 DEBUG: Robot Danysh ends turn.
 DEBUG: Robot Iliya starts turn.
@@ -57,12 +57,12 @@ Iliya failed to move to (7, 10).
 DEBUG: Robot Iliya ends turn.
 DEBUG: Robot Asmaan starts turn.
 Asmaan is thinking...
-Asmaan looks at (0, 8): Empty.
-Asmaan fired but target was empty at (0, 8).
-Asmaan moved to (0, 8).
+Asmaan looks at (9, 9): Empty.
+Asmaan MISSED at (9, 9).
+Asmaan moved to (9, 9).
 DEBUG: Robot Asmaan ends turn.
 ----- Battlefield After Turn 2 -----
-. . . . . . . . A . 
+. . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . D . 
@@ -71,13 +71,13 @@ DEBUG: Robot Asmaan ends turn.
 . . . . . . . . . . 
 . . . . . . . . . I 
 . . . . . . . . . . 
-. . . . . . . . . . 
+. . . . . . . . . A 
 
 ----- Step 3 -----
 DEBUG: Robot Danysh starts turn.
 Danysh is thinking...
 Danysh looks at (3, 9): Empty.
-Danysh MISSED at (3, 9).
+Danysh fired but target was empty at (3, 9).
 Danysh moved to (3, 9).
 DEBUG: Robot Danysh ends turn.
 DEBUG: Robot Iliya starts turn.
@@ -88,12 +88,12 @@ Iliya failed to move to (7, 10).
 DEBUG: Robot Iliya ends turn.
 DEBUG: Robot Asmaan starts turn.
 Asmaan is thinking...
-Asmaan looks at (0, 9): Empty.
-Asmaan MISSED at (0, 9).
-Asmaan moved to (0, 9).
+Asmaan looks at (9, 10): Out of bounds!
+Asmaan fired out of bounds.
+Asmaan failed to move to (9, 10).
 DEBUG: Robot Asmaan ends turn.
 ----- Battlefield After Turn 3 -----
-. . . . . . . . . A 
+. . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . D 
@@ -102,7 +102,7 @@ DEBUG: Robot Asmaan ends turn.
 . . . . . . . . . . 
 . . . . . . . . . I 
 . . . . . . . . . . 
-. . . . . . . . . . 
+. . . . . . . . . A 
 
 ----- Step 4 -----
 DEBUG: Robot Danysh starts turn.
@@ -119,12 +119,12 @@ Iliya failed to move to (7, 10).
 DEBUG: Robot Iliya ends turn.
 DEBUG: Robot Asmaan starts turn.
 Asmaan is thinking...
-Asmaan looks at (0, 10): Out of bounds!
+Asmaan looks at (9, 10): Out of bounds!
 Asmaan fired out of bounds.
-Asmaan failed to move to (0, 10).
+Asmaan failed to move to (9, 10).
 DEBUG: Robot Asmaan ends turn.
 ----- Battlefield After Turn 4 -----
-. . . . . . . . . A 
+. . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . D 
@@ -133,7 +133,7 @@ DEBUG: Robot Asmaan ends turn.
 . . . . . . . . . . 
 . . . . . . . . . I 
 . . . . . . . . . . 
-. . . . . . . . . . 
+. . . . . . . . . A 
 
 ----- Step 5 -----
 DEBUG: Robot Danysh starts turn.
@@ -150,12 +150,12 @@ Iliya failed to move to (7, 10).
 DEBUG: Robot Iliya ends turn.
 DEBUG: Robot Asmaan starts turn.
 Asmaan is thinking...
-Asmaan looks at (0, 10): Out of bounds!
+Asmaan looks at (9, 10): Out of bounds!
 Asmaan fired out of bounds.
-Asmaan failed to move to (0, 10).
+Asmaan failed to move to (9, 10).
 DEBUG: Robot Asmaan ends turn.
 ----- Battlefield After Turn 5 -----
-. . . . . . . . . A 
+. . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . D 
@@ -164,4 +164,4 @@ DEBUG: Robot Asmaan ends turn.
 . . . . . . . . . . 
 . . . . . . . . . I 
 . . . . . . . . . . 
-. . . . . . . . . . 
+. . . . . . . . . A 
