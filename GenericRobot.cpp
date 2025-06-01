@@ -47,7 +47,7 @@ void GenericRobot::look(const Battlefield& field, int dx, int dy, ostream& out) 
     writeBoth(out, name + " looks at (" + std::to_string(r) + ", " + std::to_string(c) + "): ");
 
     if (!inBounds(r, c, field)) {
-        out << "Out of bounds!" << endl;
+        writeBoth(out, "Out of bounds!\n");
     } else {
         char cell = field.getAt(r, c);
         if (cell == '.') {
