@@ -1,4 +1,5 @@
-A . . . . . . . . . 
+----- Initial Battlefield -----
+. . . . . . A . . . 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . D . . . 
@@ -8,23 +9,29 @@ A . . . . . . . . .
 . . . . . . . . I . 
 . . . . . . . . . . 
 . . . . . . . . . . 
+DEBUG: Starting simulation with 5 steps.
+
+----- Step 1 -----
 DEBUG: Robot Danysh starts turn.
 Danysh is thinking...
-Danysh fired but target was empty at (3, 7).
+Danysh looks at (3, 7): Empty.
+Danysh MISSED at (3, 7).
 Danysh moved to (3, 7).
 DEBUG: Robot Danysh ends turn.
 DEBUG: Robot Iliya starts turn.
 Iliya is thinking...
-Iliya MISSED at (7, 9).
+Iliya looks at (7, 9): Empty.
+Iliya fired but target was empty at (7, 9).
 Iliya moved to (7, 9).
 DEBUG: Robot Iliya ends turn.
 DEBUG: Robot Asmaan starts turn.
 Asmaan is thinking...
-Asmaan fired but target was empty at (0, 1).
-Asmaan moved to (0, 1).
+Asmaan looks at (0, 7): Empty.
+Asmaan MISSED at (0, 7).
+Asmaan moved to (0, 7).
 DEBUG: Robot Asmaan ends turn.
 ----- Battlefield After Turn 1 -----
-. A . . . . . . . . 
+. . . . . . . A . . 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . D . . 
@@ -34,24 +41,28 @@ DEBUG: Robot Asmaan ends turn.
 . . . . . . . . . I 
 . . . . . . . . . . 
 . . . . . . . . . . 
+
+----- Step 2 -----
 DEBUG: Robot Danysh starts turn.
 Danysh is thinking...
+Danysh looks at (3, 8): Empty.
 Danysh fired but target was empty at (3, 8).
 Danysh moved to (3, 8).
 DEBUG: Robot Danysh ends turn.
 DEBUG: Robot Iliya starts turn.
 Iliya is thinking...
-Out of bounds!
+Iliya looks at (7, 10): Out of bounds!
 Iliya fired out of bounds.
 Iliya failed to move to (7, 10).
 DEBUG: Robot Iliya ends turn.
 DEBUG: Robot Asmaan starts turn.
 Asmaan is thinking...
-Asmaan fired but target was empty at (0, 2).
-Asmaan moved to (0, 2).
+Asmaan looks at (0, 8): Empty.
+Asmaan fired but target was empty at (0, 8).
+Asmaan moved to (0, 8).
 DEBUG: Robot Asmaan ends turn.
 ----- Battlefield After Turn 2 -----
-. . A . . . . . . . 
+. . . . . . . . A . 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . D . 
@@ -61,24 +72,28 @@ DEBUG: Robot Asmaan ends turn.
 . . . . . . . . . I 
 . . . . . . . . . . 
 . . . . . . . . . . 
+
+----- Step 3 -----
 DEBUG: Robot Danysh starts turn.
 Danysh is thinking...
-Danysh fired but target was empty at (3, 9).
+Danysh looks at (3, 9): Empty.
+Danysh MISSED at (3, 9).
 Danysh moved to (3, 9).
 DEBUG: Robot Danysh ends turn.
 DEBUG: Robot Iliya starts turn.
 Iliya is thinking...
-Out of bounds!
+Iliya looks at (7, 10): Out of bounds!
 Iliya fired out of bounds.
 Iliya failed to move to (7, 10).
 DEBUG: Robot Iliya ends turn.
 DEBUG: Robot Asmaan starts turn.
 Asmaan is thinking...
-Asmaan MISSED at (0, 3).
-Asmaan moved to (0, 3).
+Asmaan looks at (0, 9): Empty.
+Asmaan MISSED at (0, 9).
+Asmaan moved to (0, 9).
 DEBUG: Robot Asmaan ends turn.
 ----- Battlefield After Turn 3 -----
-. . . A . . . . . . 
+. . . . . . . . . A 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . D 
@@ -88,25 +103,59 @@ DEBUG: Robot Asmaan ends turn.
 . . . . . . . . . I 
 . . . . . . . . . . 
 . . . . . . . . . . 
+
+----- Step 4 -----
 DEBUG: Robot Danysh starts turn.
 Danysh is thinking...
-Out of bounds!
+Danysh looks at (3, 10): Out of bounds!
 Danysh fired out of bounds.
 Danysh failed to move to (3, 10).
 DEBUG: Robot Danysh ends turn.
 DEBUG: Robot Iliya starts turn.
 Iliya is thinking...
-Out of bounds!
+Iliya looks at (7, 10): Out of bounds!
 Iliya fired out of bounds.
 Iliya failed to move to (7, 10).
 DEBUG: Robot Iliya ends turn.
 DEBUG: Robot Asmaan starts turn.
 Asmaan is thinking...
-Asmaan fired but target was empty at (0, 4).
-Asmaan moved to (0, 4).
+Asmaan looks at (0, 10): Out of bounds!
+Asmaan fired out of bounds.
+Asmaan failed to move to (0, 10).
 DEBUG: Robot Asmaan ends turn.
 ----- Battlefield After Turn 4 -----
-. . . . A . . . . . 
+. . . . . . . . . A 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . D 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . I 
+. . . . . . . . . . 
+. . . . . . . . . . 
+
+----- Step 5 -----
+DEBUG: Robot Danysh starts turn.
+Danysh is thinking...
+Danysh looks at (3, 10): Out of bounds!
+Danysh fired out of bounds.
+Danysh failed to move to (3, 10).
+DEBUG: Robot Danysh ends turn.
+DEBUG: Robot Iliya starts turn.
+Iliya is thinking...
+Iliya looks at (7, 10): Out of bounds!
+Iliya fired out of bounds.
+Iliya failed to move to (7, 10).
+DEBUG: Robot Iliya ends turn.
+DEBUG: Robot Asmaan starts turn.
+Asmaan is thinking...
+Asmaan looks at (0, 10): Out of bounds!
+Asmaan fired out of bounds.
+Asmaan failed to move to (0, 10).
+DEBUG: Robot Asmaan ends turn.
+----- Battlefield After Turn 5 -----
+. . . . . . . . . A 
 . . . . . . . . . . 
 . . . . . . . . . . 
 . . . . . . . . . D 

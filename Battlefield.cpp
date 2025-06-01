@@ -1,5 +1,6 @@
 #include "Battlefield.h"
 #include <iostream>
+#include "Utils.h"
 using namespace std;
 
 Battlefield::Battlefield(int r, int c) : rows(r), cols(c) {
@@ -43,8 +44,8 @@ int Battlefield::getCols() const { return cols; }
 void Battlefield::display(ostream& out) const {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            out << grid[i][j] << ' ';
+            writeBoth(out, string(1, grid[i][j]) + " ");
         }
-        out << endl;
+        writeBoth(out, "\n");
     }
 }

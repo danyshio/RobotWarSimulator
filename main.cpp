@@ -7,6 +7,7 @@
 #include <ctime>
 #include "Battlefield.h"
 #include "GenericRobot.h"
+#include "Utils.h"
 
 using namespace std;
 
@@ -73,52 +74,42 @@ int main() {
         robots.emplace_back(name, r, c, symbol);
     }
 
-    cout << "----- Initial Battlefield -----" << endl;
-    field.display(cout);
-    field.display(outFile);
+    writeBoth(outFile, "----- Initial Battlefield -----\n");
+    field.display(outFile); // display handles writeBoth inside now
 
-    cout << "DEBUG: Starting simulation with " << steps << " steps." << endl;
+    writeBoth(outFile, "DEBUG: Starting simulation with " + to_string(steps) + " steps.\n");
 
-for (int step = 0; step < steps; ++step) {
-    cout << "\n----- Step " << (step + 1) << " -----" << endl;
+    for (int step = 0; step < steps; ++step) {
+        writeBoth(outFile, "\n----- Step " + to_string(step + 1) + " -----\n");
 
-    for (auto& robot : robots) {
-        if (!robot.isAlive()) continue;
+        for (auto& robot : robots) {
+            if (!robot.isAlive()) continue;
 
-        cout << "DEBUG: Robot " << robot.getName() << " starts turn." << endl;
-        outFile << "DEBUG: Robot " << robot.getName() << " starts turn." << endl;
+            writeBoth(outFile, "DEBUG: Robot " + robot.getName() + " starts turn.\n");
 
+            robot.think(outFile);
+            robot.look(field, 0, 1, outFile);  // Look right
+            robot.fire(field, robots, 0, 1, outFile); // Fire right
+            robot.move(field, 0, 1, outFile);  // Move right
+            robot.endTurn();
 
-        robot.think(outFile);
-        robot.look(field, 0, 1, outFile);  // Look right
-        robot.fire(field, robots, 0, 1, outFile); // Fire right
-        robot.move(field, 0, 1, outFile);  // Move right
-        robot.endTurn();
+            writeBoth(outFile, "DEBUG: Robot " + robot.getName() + " ends turn.\n");
+        }
 
-        cout << "DEBUG: Robot " << robot.getName() << " ends turn." << endl;
-        outFile << "DEBUG: Robot " << robot.getName() << " ends turn." << endl;
-    
-    }
-
-    // Try to reenter one robot
-    for (auto& robot : robots) {
-        if (!robot.isAlive() && robot.getLives() > 0 && robot.getReentries() < 3) {
-            if (robot.attemptReentry(field, rows, cols, outFile)) {
-                cout << "DEBUG: " << robot.getName() << " reentered the battlefield." << endl;
-                outFile << "DEBUG: " << robot.getName() << " reentered the battlefield." << endl;
-                break;
+        // Try to reenter one robot
+        for (auto& robot : robots) {
+            if (!robot.isAlive() && robot.getLives() > 0 && robot.getReentries() < 3) {
+                if (robot.attemptReentry(field, rows, cols, outFile)) {
+                    writeBoth(outFile, "DEBUG: " + robot.getName() + " reentered the battlefield.\n");
+                    break;
+                }
             }
         }
+
+        writeBoth(outFile, "----- Battlefield After Turn " + to_string(step + 1) + " -----\n");
+        field.display(outFile);
     }
 
-    cout << "----- Battlefield After Turn " << (step + 1) << " -----" << endl;
-    outFile << "----- Battlefield After Turn " << (step + 1) << " -----" << endl;
-    
-    field.display(cout);
-    field.display(outFile);
-    }
-
-    outFile.close(); // Close log file
+    outFile.close();
     return 0;
-
 }
